@@ -341,7 +341,12 @@ static int user_main(int argc, char *argv[])
   check_test_memory_usage();
 #endif
 
-#ifdef CONFIG_SCHED_THREAD_LOCAL
+#if defined(CONFIG_SCHED_THREAD_LOCAL) || \
+    (defined(CONFIG_ARCH_TOOLCHAIN_GNU) && \
+     !defined(CONFIG_ARCH_TOOLCHAIN_CLANG) && \
+     !defined(CONFIG_ARCH_TOOLCHAIN_ARMCLANG) && \
+     !defined(CONFIG_ARCH_TOOLCHAIN_GHS) && \
+     CONFIG_TLS_NELEM != 0 && CONFIG_TLS_TASK_NELEM != 0)
   /* Test __thread/thread_local keyword */
 
   printf("\nuser_main: sched_thread_local test\n");

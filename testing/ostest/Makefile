@@ -67,8 +67,18 @@ ifneq ($(CONFIG_TLS_NELEM),0)
 CSRCS += tls.c
 endif
 
+# A thread_local variable has one copy per thread either through the native
+# thread local storage of NuttX or through the emulated one of libs/libc/tls,
+# which is built under the conditions repeated here.
+
 ifeq ($(CONFIG_SCHED_THREAD_LOCAL),y)
 CSRCS += sched_thread_local.c
+else ifeq ($(CONFIG_ARCH_TOOLCHAIN_GNU)$(CONFIG_ARCH_TOOLCHAIN_CLANG)$(CONFIG_ARCH_TOOLCHAIN_ARMCLANG)$(CONFIG_ARCH_TOOLCHAIN_GHS),y)
+ifneq ($(CONFIG_TLS_NELEM),0)
+ifneq ($(CONFIG_TLS_TASK_NELEM),0)
+CSRCS += sched_thread_local.c
+endif
+endif
 endif
 
 ifeq ($(CONFIG_TESTING_OSTEST_AIO),y)

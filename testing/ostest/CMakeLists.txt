@@ -98,7 +98,18 @@ if(CONFIG_TESTING_OSTEST)
       list(APPEND SRCS specific.c)
     endif()
 
-    if(CONFIG_SCHED_THREAD_LOCAL)
+    # A thread_local variable has one copy per thread either through the native
+    # thread local storage of NuttX or through the emulated one of
+    # libs/libc/tls, which is built under the conditions repeated here.
+
+    if(CONFIG_SCHED_THREAD_LOCAL
+       OR (CONFIG_ARCH_TOOLCHAIN_GNU
+           AND NOT CONFIG_ARCH_TOOLCHAIN_CLANG
+           AND NOT CONFIG_ARCH_TOOLCHAIN_ARMCLANG
+           AND NOT CONFIG_ARCH_TOOLCHAIN_GHS
+           AND NOT CONFIG_TLS_NELEM EQUAL 0
+           AND NOT CONFIG_TLS_TASK_NELEM EQUAL 0
+          ))
       list(APPEND SRCS sched_thread_local.c)
     endif()
 

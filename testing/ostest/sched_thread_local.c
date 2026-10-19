@@ -36,7 +36,12 @@
 
 #include "ostest.h"
 
-#ifdef CONFIG_SCHED_THREAD_LOCAL
+#if defined(CONFIG_SCHED_THREAD_LOCAL) || \
+    (defined(CONFIG_ARCH_TOOLCHAIN_GNU) && \
+     !defined(CONFIG_ARCH_TOOLCHAIN_CLANG) && \
+     !defined(CONFIG_ARCH_TOOLCHAIN_ARMCLANG) && \
+     !defined(CONFIG_ARCH_TOOLCHAIN_GHS) && \
+     CONFIG_TLS_NELEM != 0 && CONFIG_TLS_TASK_NELEM != 0)
 
 /****************************************************************************
  * Pre-processor Definitions
@@ -230,4 +235,4 @@ void sched_thread_local_test(void)
     }
 }
 
-#endif /* CONFIG_SCHED_THREAD_LOCAL */
+#endif /* CONFIG_SCHED_THREAD_LOCAL || emulated TLS */
